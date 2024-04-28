@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "557660823475",
+    "project_id": "tppmnewsapp",
+    "storage_bucket": "tppmnewsapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557660823475:android:e02190272b00b1a3a0b5c6",
+        "android_client_info": {
+          "package_name": "com.example.final_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-La6yFdHV1IFI2HnL8AplSwEYtuW7V5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
