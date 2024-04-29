@@ -1,10 +1,12 @@
+import 'package:final_project/models/auth/user_model.dart';
 import 'package:final_project/providers/states/auth_state.dart';
 import 'package:final_project/services/storage/auth/auth_storage_service.dart';
+import 'package:final_project/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class CustomAuthProvider extends StateNotifier<AuthState> {
-  late User? _currentUser;
+  late UserModel? _currentUser;
   final FirebaseAuth _auth;
   final AuthStorageService _authStorageService;
 
@@ -18,8 +20,8 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
     init();
   }
 
-  void init() async {
-    final authenticated = _authStorageService.state;
+  void init() {
+    final authenticated = _authStorageService.isAuthenticated;
     _currentUser = _authStorageService.user;
     if (!authenticated || _currentUser == null) {
       logout();
@@ -36,14 +38,19 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      _currentUser = userCredential.user;
+
+      _currentUser = UserModel(userId: userCredential.user!.uid, email: email);
       _authStorageService.saveUser(_currentUser!);
-      String token = await _extractToken();
+
+      String token = await _extractToken(userCredential.user);
       _authStorageService.saveToken(token);
+
       state = AuthState.authenticated(email: _currentUser!.email!);
       _authStorageService.saveState(state);
+    } on FirebaseAuthException {
+      state = const AuthState.failed(reason: ErrorMessages.invalidCredentials);
     } on Exception {
-      state = const AuthState.failed(reason: "Login failed");
+      state = const AuthState.failed(reason: ErrorMessages.unknownError);
     }
   }
 
@@ -55,25 +62,30 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-      _currentUser = userCredential.user;
-      String token = await _extractToken();
-      _authStorageService.saveToken(token);
+
+      _currentUser = UserModel(userId: userCredential.user!.uid, email: email);
       _authStorageService.saveUser(_currentUser!);
-      state = AuthState.authenticated(email: _currentUser!.email!);
+
+      String token = await _extractToken(userCredential.user);
+      _authStorageService.saveToken(token);
+
+      state = AuthState.authenticated(email: email);
       _authStorageService.saveState(state);
+    } on FirebaseAuthException catch (e) {
+      state = AuthState.failed(reason: e.message!);
     } on Exception {
-      state = const AuthState.failed(reason: "Registration failed");
+      state = const AuthState.failed(reason: ErrorMessages.unknownError);
     }
   }
 
   void logout() {
     _currentUser = null;
-    state = const AuthState.unauthenticated();
     _authStorageService.resetKeys();
+    state = const AuthState.unauthenticated();
   }
 
-  Future<String> _extractToken() async {
-    String? idToken = await _currentUser!.getIdToken();
+  Future<String> _extractToken(User? userCredential) async {
+    String? idToken = await userCredential!.getIdToken();
     if (idToken == null) {
       throw Exception("Token generation failed");
     }

@@ -6,9 +6,9 @@ import 'package:final_project/utilities/form_validator.dart';
 import 'package:final_project/widgets/login/auth_title.dart';
 import 'package:final_project/widgets/shared/custom_text_field.dart';
 import 'package:final_project/widgets/shared/auth_redirect_link.dart';
+import 'package:final_project/widgets/shared/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginScreen extends HookConsumerWidget {
   LoginScreen({super.key});
@@ -21,40 +21,22 @@ class LoginScreen extends HookConsumerWidget {
     _passwordController.dispose();
   }
 
+  void clearAndRedirect() {
+    _emailController.clear();
+    _passwordController.clear();
+    AppRouter.pushNamed(Routes.homeScreenRoute);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = GlobalKey<FormState>();
     ref.listen<AuthState>(
       authProvider,
       (_, authState) => authState.maybeWhen(
-        authenticated: (_) {
-          _emailController.clear();
-          _passwordController.clear();
-          AppRouter.pushNamed(Routes.homeScreenRoute);
-          return null;
-        },
-        failed: (reason) async => {
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Login Failed"),
-                content: Text(reason),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text("OK"),
-                  )
-                ],
-              );
-            },
-          )
-        },
-        orElse: () {
-          return null;
-        },
+        authenticated: (_) => clearAndRedirect(),
+        failed: (reason) async => await FormValidator.showAlertDialog(
+            "Login Failed", reason, context),
+        orElse: () {},
       ),
     );
     return Scaffold(
@@ -108,14 +90,7 @@ class LoginScreen extends HookConsumerWidget {
                                 builder: (context, ref, child) {
                                   final authState = ref.watch(authProvider);
                                   return authState.maybeWhen(
-                                      authenticating: () => const Center(
-                                              child: SpinKitRing(
-                                            color: Colors.blue,
-                                            size: 30,
-                                            lineWidth: 4,
-                                            duration:
-                                                Duration(milliseconds: 1000),
-                                          )),
+                                      authenticating: () => const Spinner(),
                                       orElse: () => child!);
                                 },
                                 child: const Text(

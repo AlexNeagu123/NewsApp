@@ -13,7 +13,7 @@ class StorageBase {
     return _instance!;
   }
 
-  Future<void> init() async {
+  static Future<void> init() async {
     sharedPrefereces ??= await SharedPreferences.getInstance();
     secureStorage ??= const FlutterSecureStorage();
   }

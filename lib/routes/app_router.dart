@@ -1,4 +1,5 @@
 import 'package:final_project/routes/app_routes.dart';
+import 'package:final_project/screens/home_screen.dart';
 import 'package:final_project/screens/login_screen.dart';
 import 'package:final_project/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,10 @@ class AppRouter {
         return MaterialPageRoute<dynamic>(
             builder: (_) => RegisterScreen(),
             settings: const RouteSettings(name: Routes.registerScreenRoute));
+      case Routes.homeScreenRoute:
+        return MaterialPageRoute<dynamic>(
+            builder: (_) => const HomeScreen(),
+            settings: const RouteSettings(name: Routes.homeScreenRoute));
       default:
         return _errorRoute();
     }

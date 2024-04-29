@@ -1,4 +1,5 @@
 import 'package:final_project/utilities/constants.dart';
+import 'package:flutter/material.dart';
 
 class FormValidator {
   const FormValidator._();
@@ -28,5 +29,26 @@ class FormValidator {
       return ErrorMessages.passwordsDoNotMatch;
     }
     return null;
+  }
+
+  static Future<void> showAlertDialog(
+      String errorTitle, String errorMessage, BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(errorTitle),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            )
+          ],
+        );
+      },
+    );
   }
 }

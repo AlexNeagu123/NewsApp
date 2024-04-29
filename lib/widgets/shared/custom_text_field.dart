@@ -84,11 +84,6 @@ class CustomTextFieldState extends State<CustomTextField> {
                   prefixIcon: widget.prefix,
                   border: _normalBorder(),
                   errorBorder: hasError ? _errorBorder() : null))),
-      if (hasError) ...[
-        const SizedBox(height: 5),
-        Text(errorText!,
-            style: const TextStyle(color: Colors.red, fontSize: 16))
-      ]
     ]);
   }
 }

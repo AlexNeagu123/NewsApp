@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:final_project/models/auth/user_model.dart';
 import 'package:final_project/providers/states/auth_state.dart';
 import 'package:final_project/services/storage/storage_base.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthStorageService {
   static const _tokenKey = 'tokenKey';
@@ -10,10 +10,10 @@ class AuthStorageService {
   static const _userKey = 'authUserKey';
   final _storage = StorageBase.instance;
 
-  User? get user {
+  UserModel? get user {
     final userString = _storage.getCommonData<String>(_userKey);
     if (userString != null) {
-      return jsonDecode(userString);
+      return UserModel.fromJson(jsonDecode(userString) as Map<String, dynamic>);
     }
     return null;
   }
@@ -22,12 +22,12 @@ class AuthStorageService {
     return _storage.getSecureData(_tokenKey);
   }
 
-  bool get state {
+  bool get isAuthenticated {
     return _storage.getCommonData<bool>(_isAuthenticatedKey) ?? false;
   }
 
-  void saveUser(User user) {
-    _storage.setCommonData<String>(_userKey, jsonEncode(user));
+  void saveUser(UserModel user) {
+    _storage.setCommonData<String>(_userKey, jsonEncode(user.toJson()));
   }
 
   void saveToken(String token) async {
