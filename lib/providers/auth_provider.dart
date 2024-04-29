@@ -26,7 +26,7 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
     if (!authenticated || _currentUser == null) {
       logout();
     } else {
-      state = AuthState.authenticated(email: _currentUser!.email!);
+      state = AuthState.authenticated(email: _currentUser!.email);
     }
   }
 
@@ -38,15 +38,7 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-
-      _currentUser = UserModel(userId: userCredential.user!.uid, email: email);
-      _authStorageService.saveUser(_currentUser!);
-
-      String token = await _extractToken(userCredential.user);
-      _authStorageService.saveToken(token);
-
-      state = AuthState.authenticated(email: _currentUser!.email!);
-      _authStorageService.saveState(state);
+      _parseUserCredsAndStore(userCredential, email);
     } on FirebaseAuthException {
       state = const AuthState.failed(reason: ErrorMessages.invalidCredentials);
     } on Exception {
@@ -62,15 +54,7 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-
-      _currentUser = UserModel(userId: userCredential.user!.uid, email: email);
-      _authStorageService.saveUser(_currentUser!);
-
-      String token = await _extractToken(userCredential.user);
-      _authStorageService.saveToken(token);
-
-      state = AuthState.authenticated(email: email);
-      _authStorageService.saveState(state);
+      _parseUserCredsAndStore(userCredential, email);
     } on FirebaseAuthException catch (e) {
       state = AuthState.failed(reason: e.message!);
     } on Exception {
@@ -90,5 +74,17 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
       throw Exception("Token generation failed");
     }
     return idToken;
+  }
+
+  Future<void> _parseUserCredsAndStore(
+      UserCredential userCredential, String email) async {
+    _currentUser = UserModel(userId: userCredential.user!.uid, email: email);
+    _authStorageService.saveUser(_currentUser!);
+
+    String token = await _extractToken(userCredential.user);
+    _authStorageService.saveToken(token);
+
+    state = AuthState.authenticated(email: _currentUser!.email);
+    _authStorageService.saveState(state);
   }
 }
