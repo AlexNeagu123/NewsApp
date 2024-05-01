@@ -1,5 +1,6 @@
 import 'package:final_project/routes/app_routes.dart';
-import 'package:final_project/screens/home_screen.dart';
+import 'package:final_project/screens/channels_screen.dart';
+import 'package:final_project/screens/feed_screen.dart';
 import 'package:final_project/screens/login_screen.dart';
 import 'package:final_project/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
-  static const String initialRoute = Routes.loginScreenRoute;
+  static const String initialRoute = Routes.feedScreenRoute;
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.loginScreenRoute:
@@ -19,10 +20,14 @@ class AppRouter {
         return MaterialPageRoute<dynamic>(
             builder: (_) => RegisterScreen(),
             settings: const RouteSettings(name: Routes.registerScreenRoute));
-      case Routes.homeScreenRoute:
+      case Routes.feedScreenRoute:
         return MaterialPageRoute<dynamic>(
-            builder: (_) => const HomeScreen(),
-            settings: const RouteSettings(name: Routes.homeScreenRoute));
+            builder: (_) => const FeedScreen(),
+            settings: const RouteSettings(name: Routes.feedScreenRoute));
+      case Routes.channelScreenRoute:
+        return MaterialPageRoute<dynamic>(
+            builder: (_) => const ChannelsScreen(),
+            settings: const RouteSettings(name: Routes.channelScreenRoute));
       default:
         return _errorRoute();
     }

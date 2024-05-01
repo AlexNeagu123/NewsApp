@@ -12,3 +12,8 @@ class ErrorMessages {
 class StringConstants {
   static const String emailRegex = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
 }
+
+enum PageType {
+  feedPage,
+  channelsPage;
+}

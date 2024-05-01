@@ -1,4 +1,4 @@
-import 'package:final_project/models/auth/user_model.dart';
+import 'package:final_project/models/auth/user/user_model.dart';
 import 'package:final_project/providers/states/auth_state.dart';
 import 'package:final_project/services/storage/auth/auth_storage_service.dart';
 import 'package:final_project/utilities/constants.dart';
