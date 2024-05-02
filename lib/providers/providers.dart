@@ -51,7 +51,8 @@ final authProvider =
       auth: auth,
       authStorageService: authStorageService,
       userSubscriptionsStorageService: userSubscriptionsStorageService,
-      userSubscribedFeedRepository: userSubscribedFeedRepository);
+      userSubscribedFeedRepository: userSubscribedFeedRepository,
+      ref: ref);
 });
 
 // Channels
@@ -81,19 +82,13 @@ final userSubscribedFeedProvider =
   );
 });
 
+final selectedCategoryProvider = StateProvider<String>((ref) {
+  return ChannelCategories.business;
+});
+
 final selectedCategoryChannelsProvider =
     FutureProvider<List<NewsProvider>>((ref) {
   final selectedCategory = ref.watch(selectedCategoryProvider);
   final newsProviders = ref.watch(newsProvidersProvider);
   return newsProviders.getNewsProvidersByCategory(selectedCategory);
-});
-
-final selectedCategoryProvider = StateProvider<String>((ref) {
-  return ChannelCategories.business;
-});
-
-final subscribedChannelsFutureProvider =
-    FutureProvider<List<NewsProvider>>((ref) {
-  final provider = ref.watch(userSubscribedFeedProvider.notifier);
-  return provider.getAllSubscriptions();
 });

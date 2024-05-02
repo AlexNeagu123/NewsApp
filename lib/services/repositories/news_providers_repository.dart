@@ -1,5 +1,6 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:final_project/models/feeds/news_provider/news_provider.dart";
+import "package:flutter/foundation.dart";
 import "package:get/get.dart";
 
 class NewsProvidersRepository extends GetxController {
@@ -36,6 +37,7 @@ class NewsProvidersRepository extends GetxController {
 
   Future<List<NewsProvider>> fetchByProviderIds(
       List<String> providerIds) async {
+    if (providerIds.isEmpty) return [];
     final snapshot = await _db
         .collection(collection)
         .where("providerId", whereIn: providerIds)

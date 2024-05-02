@@ -72,6 +72,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
                     icon: Icons.logout,
                     color: Colors.black,
                     onPressed: () {
+                      AppRouter.popUntilRoot();
                       ref.read(authProvider.notifier).logout();
                     }),
                 unauthenticated: () => NavBarButton(

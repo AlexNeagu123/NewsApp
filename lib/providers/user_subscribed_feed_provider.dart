@@ -24,6 +24,14 @@ class UserSubscribedFeedProvider extends StateNotifier<List<String>> {
         .fetchByProviderIds(_userSubscriptionsStorageService.subscriptions);
   }
 
+  void clearState() {
+    state = [];
+  }
+
+  void syncStateWithStorage() {
+    state = _userSubscriptionsStorageService.subscriptions;
+  }
+
   Future<void> addSubscription(String userId, String providerId) async {
     final userSubscribedFeed = UserSubscribedFeed(
       userId: userId,
