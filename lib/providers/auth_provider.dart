@@ -1,20 +1,28 @@
 import 'package:final_project/models/auth/user/user_model.dart';
 import 'package:final_project/providers/states/auth_state.dart';
+import 'package:final_project/services/repositories/user_subscribed_feed_repository.dart';
 import 'package:final_project/services/storage/auth/auth_storage_service.dart';
+import 'package:final_project/services/storage/subscriptions/user_subscriptions_storage_service.dart';
 import 'package:final_project/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class CustomAuthProvider extends StateNotifier<AuthState> {
   late UserModel? _currentUser;
   final FirebaseAuth _auth;
   final AuthStorageService _authStorageService;
+  final UserSubscriptionsStorageService _userSubscriptionsStorageService;
+  final UserSubscribedFeedRepository _userSubscribedFeedRepository;
 
   CustomAuthProvider({
     required FirebaseAuth auth,
     required AuthStorageService authStorageService,
-    required Ref ref,
+    required UserSubscriptionsStorageService userSubscriptionsStorageService,
+    required UserSubscribedFeedRepository userSubscribedFeedRepository,
   })  : _authStorageService = authStorageService,
+        _userSubscriptionsStorageService = userSubscriptionsStorageService,
+        _userSubscribedFeedRepository = userSubscribedFeedRepository,
         _auth = auth,
         super(const AuthState.unauthenticated()) {
     init();
@@ -29,6 +37,8 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
       state = AuthState.authenticated(email: _currentUser!.email);
     }
   }
+
+  UserModel get currentUser => _currentUser!;
 
   Future<void> login({
     required String email,
@@ -65,6 +75,7 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
   void logout() {
     _currentUser = null;
     _authStorageService.resetKeys();
+    _userSubscriptionsStorageService.resetKeys();
     state = const AuthState.unauthenticated();
   }
 
@@ -86,5 +97,12 @@ class CustomAuthProvider extends StateNotifier<AuthState> {
 
     state = AuthState.authenticated(email: _currentUser!.email);
     _authStorageService.saveState(state);
+
+    final subscriptions = await _userSubscribedFeedRepository
+        .fetchAllByUserId(_currentUser!.userId);
+
+    debugPrint(subscriptions.toString());
+    _userSubscriptionsStorageService.saveSubscriptions(
+        subscriptions.map((e) => e.subscribedProviderId).toList());
   }
 }

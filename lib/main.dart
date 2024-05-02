@@ -1,6 +1,7 @@
 import 'package:final_project/firebase_options.dart';
 import 'package:final_project/routes/app_router.dart';
 import 'package:final_project/services/repositories/news_providers_repository.dart';
+import 'package:final_project/services/repositories/user_subscribed_feed_repository.dart';
 import 'package:final_project/services/storage/storage_base.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ Future<void> main() async {
   await StorageBase.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Get.put(NewsProvidersRepository());
+  Get.put(UserSubscribedFeedRepository());
   runApp(const MyApp());
 }
 

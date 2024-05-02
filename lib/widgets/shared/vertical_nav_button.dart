@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 class VerticalNavButton extends StatelessWidget {
   final String buttonTitle;
   final Widget buttonIcon;
-
+  final void Function() onTap;
   const VerticalNavButton(
-      {super.key, required this.buttonTitle, required this.buttonIcon});
+      {super.key,
+      required this.buttonTitle,
+      required this.buttonIcon,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class VerticalNavButton extends StatelessWidget {
               fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
         ),
         leading: buttonIcon,
-        onTap: () {},
+        onTap: onTap,
       ),
     );
   }

@@ -30,6 +30,19 @@ class NewsProvidersRepository extends GetxController {
     return snapshot.docs
         .map((doc) => doc.data()["category"] as String)
         .toSet()
+        .toList()
+      ..sort((a, b) => a.compareTo(b));
+  }
+
+  Future<List<NewsProvider>> fetchByProviderIds(
+      List<String> providerIds) async {
+    final snapshot = await _db
+        .collection(collection)
+        .where("providerId", whereIn: providerIds)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => NewsProvider.fromJson(doc.data()))
         .toList();
   }
 }

@@ -7,7 +7,9 @@ part 'news_provider.g.dart';
 class NewsProvider with _$NewsProvider {
   const factory NewsProvider(
       {required String providerId,
-      required String providerImageUrl,
+      required String description,
+      required String category,
+      required String? providerImageUrl,
       required String providerMainUrl,
       required String providerName,
       required String providerRssUrl}) = _NewsProvider;
