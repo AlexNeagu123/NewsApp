@@ -28,9 +28,9 @@ class NavBarButton extends StatelessWidget {
       ),
       child: TextButton.icon(
         icon: Icon(icon),
-        label: Text(text, style: const TextStyle(color: Colors.black)),
+        label: Text(text, style: TextStyle(color: color)),
         style: TextButton.styleFrom(
-          foregroundColor: Colors.black,
+          foregroundColor: color,
         ),
         onPressed: onPressed,
       ),

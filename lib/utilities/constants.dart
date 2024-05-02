@@ -17,3 +17,12 @@ enum PageType {
   feedPage,
   channelsPage;
 }
+
+class ChannelCategories {
+  static const business = 'Business';
+  static const sport = 'Sport';
+  static const news = 'News';
+  static const gaming = 'Gaming';
+  static const technology = 'Technology';
+  static const politics = 'Politics';
+}

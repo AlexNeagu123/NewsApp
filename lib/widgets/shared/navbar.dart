@@ -50,10 +50,8 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
                   text: "Feed",
                   icon: Icons.feed,
                   isUnderlined: type == PageType.feedPage,
-                  onPressed: () {
-                    AppRouter.pushNamed(Routes.loginScreenRoute);
-                  },
-                  color: Colors.grey),
+                  onPressed: () {},
+                  color: Colors.grey[400]!),
               orElse: () => const SizedBox.shrink(),
             );
           }),

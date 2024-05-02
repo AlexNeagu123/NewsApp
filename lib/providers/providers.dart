@@ -32,3 +32,8 @@ final newsProvidersProvider = Provider<NewsProvidersProvider>((ref) {
   return NewsProvidersProvider(
       newsProvidersRepository: newsProvidersRepository);
 });
+
+final newsCategoriesProvider = FutureProvider<List<String>>((ref) {
+  final newsProviders = ref.watch(newsProvidersProvider);
+  return newsProviders.getNewsCategories();
+});

@@ -22,8 +22,8 @@ class VerticalNavButton extends StatelessWidget {
       child: ListTile(
         title: Text(
           buttonTitle,
-          style:
-              const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
         ),
         leading: buttonIcon,
         onTap: () {},
