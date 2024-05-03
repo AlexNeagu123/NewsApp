@@ -1,5 +1,6 @@
 import 'package:final_project/models/feeds/selected_channel/selected_channel.dart';
 import 'package:uuid/uuid.dart';
+import 'package:html/parser.dart' as htmlparser;
 
 class ErrorMessages {
   static const String emailEmpty = "Email cannot be empty";
@@ -40,4 +41,12 @@ String truncateWithEllipsis(String text, int maxLength) {
     return "${text.substring(0, maxLength)}..";
   }
   return text;
+}
+
+String truncateHtmlString(String htmlString, int length) {
+  final document = htmlparser.parse(htmlString);
+  final plainText = document.body!.text;
+  return plainText.length > length
+      ? '${plainText.substring(0, length)}...'
+      : plainText;
 }

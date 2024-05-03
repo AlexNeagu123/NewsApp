@@ -2,7 +2,6 @@ import 'package:final_project/models/feeds/news_entity/news_entity.dart';
 import 'package:final_project/models/feeds/news_provider/news_provider.dart';
 import 'package:final_project/services/repositories/news_entities_repository.dart';
 import 'package:final_project/utilities/rss_parser.dart';
-import 'package:flutter/foundation.dart';
 
 class NewsEntitiesProvider {
   final NewsEntitiesRepository _newsEntitiesRepository;
@@ -14,12 +13,8 @@ class NewsEntitiesProvider {
     final rssNews =
         await parseRSSFeedFromUrl(provider.providerRssUrl, provider.providerId);
 
-    debugPrint(rssNews.toString());
     for (final news in rssNews) {
-      final newsFoundInDb = await _newsEntitiesRepository
-          .findByProviderIdAndDateAndTitleAndDescription(
-              news.providerId, news.publishedOn, news.title, news.description);
-
+      final newsFoundInDb = await _newsEntitiesRepository.findByLink(news.link);
       if (newsFoundInDb.isEmpty) {
         await _newsEntitiesRepository.add(news);
       }
@@ -35,12 +30,10 @@ class NewsEntitiesProvider {
     for (final provider in providers) {
       final rssNews = await parseRSSFeedFromUrl(
           provider.providerRssUrl, provider.providerId);
-      debugPrint(rssNews.toString());
 
       for (final news in rssNews) {
-        final newsFoundInDb = await _newsEntitiesRepository
-            .findByProviderIdAndDateAndTitleAndDescription(news.providerId,
-                news.publishedOn, news.title, news.description);
+        final newsFoundInDb =
+            await _newsEntitiesRepository.findByLink(news.link);
 
         if (newsFoundInDb.isEmpty) {
           await _newsEntitiesRepository.add(news);

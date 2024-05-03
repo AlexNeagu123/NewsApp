@@ -8,10 +8,7 @@ class NewsEntitiesRepository extends GetxController {
   final _db = FirebaseFirestore.instance;
 
   Future<List<NewsEntity>> fetchAll() async {
-    final snapshot = await _db
-        .collection(collection)
-        .orderBy("publishedOn", descending: true)
-        .get();
+    final snapshot = await _db.collection(collection).get();
     return snapshot.docs.map((doc) => NewsEntity.fromJson(doc.data())).toList();
   }
 
@@ -19,7 +16,6 @@ class NewsEntitiesRepository extends GetxController {
     final snapshot = await _db
         .collection(collection)
         .where("providerId", isEqualTo: providerId)
-        .orderBy("publishedOn", descending: true)
         .get();
 
     return snapshot.docs.map((doc) => NewsEntity.fromJson(doc.data())).toList();
@@ -30,7 +26,6 @@ class NewsEntitiesRepository extends GetxController {
     final snapshot = await _db
         .collection(collection)
         .where("providerId", whereIn: providerIds)
-        .orderBy("publishedOn", descending: true)
         .get();
 
     return snapshot.docs.map((doc) => NewsEntity.fromJson(doc.data())).toList();
@@ -41,19 +36,9 @@ class NewsEntitiesRepository extends GetxController {
     return fetchAll();
   }
 
-  Future<List<NewsEntity>> findByProviderIdAndDateAndTitleAndDescription(
-      String providerId,
-      DateTime date,
-      String title,
-      String description) async {
-    final snapshot = await _db
-        .collection(collection)
-        .where("providerId", isEqualTo: providerId)
-        .where("publishedOn", isEqualTo: date)
-        .where("title", isEqualTo: title)
-        .where("description", isEqualTo: description)
-        .get();
-
+  Future<List<NewsEntity>> findByLink(String link) async {
+    final snapshot =
+        await _db.collection(collection).where("link", isEqualTo: link).get();
     return snapshot.docs.map((doc) => NewsEntity.fromJson(doc.data())).toList();
   }
 }

@@ -13,6 +13,7 @@ import 'package:final_project/services/storage/auth/auth_storage_service.dart';
 import 'package:final_project/services/storage/subscriptions/user_subscriptions_storage_service.dart';
 import 'package:final_project/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Firebase Auth Provider
@@ -102,6 +103,8 @@ final selectedCategoryProvider = StateProvider<String>((ref) {
 final selectedChannelProvider = StateProvider<SelectedChannel>((ref) {
   return ChannelOptions.allFeed;
 });
+
+// Feed providers
 
 final selectedCategoryChannelsProvider =
     FutureProvider<List<NewsProvider>>((ref) {
