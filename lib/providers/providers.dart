@@ -1,8 +1,12 @@
+import 'package:final_project/models/feeds/news_entity/news_entity.dart';
 import 'package:final_project/models/feeds/news_provider/news_provider.dart';
+import 'package:final_project/models/feeds/selected_channel/selected_channel.dart';
 import 'package:final_project/providers/auth_provider.dart';
+import 'package:final_project/providers/news_entities_provider.dart';
 import 'package:final_project/providers/news_providers_provider.dart';
 import 'package:final_project/providers/states/auth_state.dart';
 import 'package:final_project/providers/user_subscribed_feed_provider.dart';
+import 'package:final_project/services/repositories/news_entities_repository.dart';
 import 'package:final_project/services/repositories/news_providers_repository.dart';
 import 'package:final_project/services/repositories/user_subscribed_feed_repository.dart';
 import 'package:final_project/services/storage/auth/auth_storage_service.dart';
@@ -25,6 +29,10 @@ final newsProvidersRepositoryProvider =
 final userSubscribedFeedRepositoryProvider =
     Provider<UserSubscribedFeedRepository>((ref) {
   return UserSubscribedFeedRepository.instance;
+});
+
+final newsEntitiesRepositoryProvider = Provider<NewsEntitiesRepository>((ref) {
+  return NewsEntitiesRepository.instance;
 });
 
 // Storage Services
@@ -62,6 +70,11 @@ final newsProvidersProvider = Provider<NewsProvidersProvider>((ref) {
       newsProvidersRepository: newsProvidersRepository);
 });
 
+final newsEntitesProvider = Provider<NewsEntitiesProvider>((ref) {
+  final newsEntitiesRepository = ref.watch(newsEntitiesRepositoryProvider);
+  return NewsEntitiesProvider(newsEntitiesRepository: newsEntitiesRepository);
+});
+
 // Channel Categories
 final newsCategoriesProvider = FutureProvider<List<String>>((ref) {
   final newsProviders = ref.watch(newsProvidersProvider);
@@ -86,9 +99,31 @@ final selectedCategoryProvider = StateProvider<String>((ref) {
   return ChannelCategories.business;
 });
 
+final selectedChannelProvider = StateProvider<SelectedChannel>((ref) {
+  return ChannelOptions.allFeed;
+});
+
 final selectedCategoryChannelsProvider =
     FutureProvider<List<NewsProvider>>((ref) {
   final selectedCategory = ref.watch(selectedCategoryProvider);
   final newsProviders = ref.watch(newsProvidersProvider);
   return newsProviders.getNewsProvidersByCategory(selectedCategory);
+});
+
+final selectedChannelFeedProvider =
+    FutureProvider<List<NewsEntity>>((ref) async {
+  final selectedChannel = ref.watch(selectedChannelProvider);
+  final newsEntitiesProvider = ref.watch(newsEntitesProvider);
+  final subscribedProviders = ref.watch(userSubscribedFeedProvider);
+  final newsProvidersRepository = ref.watch(newsProvidersRepositoryProvider);
+
+  if (selectedChannel == ChannelOptions.allFeed) {
+    final subscribedProvidersList =
+        await newsProvidersRepository.fetchByProviderIds(subscribedProviders);
+    return newsEntitiesProvider.getAllNewsByProviders(subscribedProvidersList);
+  }
+
+  final subscribedProvider =
+      await newsProvidersRepository.fetchByProviderId(selectedChannel.id);
+  return newsEntitiesProvider.getAllNewsByProvider(subscribedProvider);
 });

@@ -1,3 +1,4 @@
+import 'package:final_project/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -6,11 +7,18 @@ class FeedMain extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Flexible(
+    final selectedChannel = ref.watch(selectedChannelProvider);
+    return Flexible(
       flex: 3,
-      child: Center(
-        child: Text('Main Content Area'),
-      ),
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(selectedChannel.name,
+                  style: const TextStyle(
+                      fontSize: 24.0, fontWeight: FontWeight.bold)),
+            )),
+      ]),
     );
   }
 }

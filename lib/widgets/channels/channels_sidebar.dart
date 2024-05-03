@@ -24,6 +24,7 @@ class ChannelsSidebar extends HookConsumerWidget {
                     itemCount: categories.length,
                     itemBuilder: (context, index) {
                       return VerticalNavButton(
+                        fontSize: 15,
                         onTap: () => ref
                             .read(selectedCategoryProvider.notifier)
                             .state = categories[index],

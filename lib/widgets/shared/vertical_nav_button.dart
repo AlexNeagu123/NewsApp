@@ -4,11 +4,14 @@ class VerticalNavButton extends StatelessWidget {
   final String buttonTitle;
   final Widget buttonIcon;
   final void Function() onTap;
+  final double fontSize;
+
   const VerticalNavButton(
       {super.key,
       required this.buttonTitle,
       required this.buttonIcon,
-      required this.onTap});
+      required this.onTap,
+      required this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,10 @@ class VerticalNavButton extends StatelessWidget {
       child: ListTile(
         title: Text(
           buttonTitle,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+              color: Colors.black),
         ),
         leading: buttonIcon,
         onTap: onTap,

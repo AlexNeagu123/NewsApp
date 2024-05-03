@@ -1,3 +1,6 @@
+import 'package:final_project/models/feeds/selected_channel/selected_channel.dart';
+import 'package:uuid/uuid.dart';
+
 class ErrorMessages {
   static const String emailEmpty = "Email cannot be empty";
   static const String invalidEmail = "Invalid email format";
@@ -25,6 +28,11 @@ class ChannelCategories {
   static const gaming = 'Gaming';
   static const technology = 'Technology';
   static const politics = 'Politics';
+}
+
+class ChannelOptions {
+  static SelectedChannel allFeed =
+      SelectedChannel(id: const Uuid().v4(), name: "All Feed");
 }
 
 String truncateWithEllipsis(String text, int maxLength) {

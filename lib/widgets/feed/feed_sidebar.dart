@@ -1,5 +1,7 @@
 import 'package:final_project/models/feeds/news_provider/news_provider.dart';
+import 'package:final_project/models/feeds/selected_channel/selected_channel.dart';
 import 'package:final_project/providers/providers.dart';
+import 'package:final_project/utilities/constants.dart';
 import 'package:final_project/widgets/shared/vertical_nav_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,13 +25,11 @@ class FeedSidebar extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             VerticalNavButton(
-                onTap: () => {},
+                onTap: () => ref.read(selectedChannelProvider.notifier).state =
+                    ChannelOptions.allFeed,
+                fontSize: 15,
                 buttonTitle: "All Posts",
                 buttonIcon: const Icon(Icons.all_inbox)),
-            VerticalNavButton(
-                onTap: () => {},
-                buttonTitle: "Unread",
-                buttonIcon: const Icon(Icons.mark_as_unread)),
             Container(
                 margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                 child: const Divider()),
@@ -52,7 +52,12 @@ class FeedSidebar extends HookConsumerWidget {
                       itemCount: channels.length,
                       itemBuilder: (context, index) {
                         return VerticalNavButton(
-                          onTap: () => {},
+                          onTap: () =>
+                              ref.read(selectedChannelProvider.notifier).state =
+                                  SelectedChannel(
+                                      id: channels[index].providerId,
+                                      name: channels[index].providerName),
+                          fontSize: 12,
                           buttonTitle: channels[index].providerName,
                           buttonIcon: const Icon(Icons.new_label_sharp),
                         );

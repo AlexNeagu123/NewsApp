@@ -1,6 +1,5 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:final_project/models/feeds/news_provider/news_provider.dart";
-import "package:flutter/foundation.dart";
 import "package:get/get.dart";
 
 class NewsProvidersRepository extends GetxController {
@@ -46,5 +45,14 @@ class NewsProvidersRepository extends GetxController {
     return snapshot.docs
         .map((doc) => NewsProvider.fromJson(doc.data()))
         .toList();
+  }
+
+  Future<NewsProvider> fetchByProviderId(String providerId) async {
+    final snapshot = await _db
+        .collection(collection)
+        .where("providerId", isEqualTo: providerId)
+        .get();
+
+    return NewsProvider.fromJson(snapshot.docs.first.data());
   }
 }
