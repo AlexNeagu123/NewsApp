@@ -31,6 +31,48 @@ class FeedSidebar extends HookConsumerWidget {
                 buttonTitle: "All Posts",
                 buttonIcon: const Icon(Icons.all_inbox)),
             Container(
+              margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey),
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value:
+                            ref.read(selectedTimeFrameProvider.notifier).state,
+                        items: <String>[
+                          TimeFrameOptions.today,
+                          TimeFrameOptions.lastWeek,
+                          TimeFrameOptions.lastMonth
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          ref.read(selectedTimeFrameProvider.notifier).state =
+                              newValue!;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
                 margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                 child: const Divider()),
             FutureBuilder<List<NewsProvider>>(

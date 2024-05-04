@@ -1,6 +1,7 @@
 import 'package:final_project/models/feeds/selected_channel/selected_channel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:html/parser.dart' as htmlparser;
+import 'package:intl/intl.dart';
 
 class ErrorMessages {
   static const String emailEmpty = "Email cannot be empty";
@@ -34,6 +35,19 @@ class ChannelCategories {
 class ChannelOptions {
   static SelectedChannel allFeed =
       SelectedChannel(id: const Uuid().v4(), name: "All Feed");
+}
+
+final dateFormats = [
+  DateFormat('yyyy-MM-dd – kk:mm'),
+  DateFormat('EEE, dd MMM yyyy'),
+  DateFormat('yyyy-MM-ddTHH:mm:ssZ'),
+  DateFormat('EEE, dd MMM yyyy HH:mm:ss \'GMT\''),
+];
+
+class TimeFrameOptions {
+  static const today = 'Today';
+  static const lastWeek = 'Last week';
+  static const lastMonth = 'Last month';
 }
 
 String truncateWithEllipsis(String text, int maxLength) {

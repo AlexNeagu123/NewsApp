@@ -1,4 +1,4 @@
-import 'package:final_project/models/feeds/news_entity/news_entity.dart';
+import 'package:final_project/models/feeds/news_entity_named/news_entity_named.dart';
 import 'package:final_project/models/feeds/news_provider/news_provider.dart';
 import 'package:final_project/models/feeds/selected_channel/selected_channel.dart';
 import 'package:final_project/providers/auth_provider.dart';
@@ -6,14 +6,12 @@ import 'package:final_project/providers/news_entities_provider.dart';
 import 'package:final_project/providers/news_providers_provider.dart';
 import 'package:final_project/providers/states/auth_state.dart';
 import 'package:final_project/providers/user_subscribed_feed_provider.dart';
-import 'package:final_project/services/repositories/news_entities_repository.dart';
 import 'package:final_project/services/repositories/news_providers_repository.dart';
 import 'package:final_project/services/repositories/user_subscribed_feed_repository.dart';
 import 'package:final_project/services/storage/auth/auth_storage_service.dart';
 import 'package:final_project/services/storage/subscriptions/user_subscriptions_storage_service.dart';
 import 'package:final_project/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Firebase Auth Provider
@@ -30,10 +28,6 @@ final newsProvidersRepositoryProvider =
 final userSubscribedFeedRepositoryProvider =
     Provider<UserSubscribedFeedRepository>((ref) {
   return UserSubscribedFeedRepository.instance;
-});
-
-final newsEntitiesRepositoryProvider = Provider<NewsEntitiesRepository>((ref) {
-  return NewsEntitiesRepository.instance;
 });
 
 // Storage Services
@@ -72,8 +66,7 @@ final newsProvidersProvider = Provider<NewsProvidersProvider>((ref) {
 });
 
 final newsEntitesProvider = Provider<NewsEntitiesProvider>((ref) {
-  final newsEntitiesRepository = ref.watch(newsEntitiesRepositoryProvider);
-  return NewsEntitiesProvider(newsEntitiesRepository: newsEntitiesRepository);
+  return NewsEntitiesProvider();
 });
 
 // Channel Categories
@@ -114,7 +107,7 @@ final selectedCategoryChannelsProvider =
 });
 
 final selectedChannelFeedProvider =
-    FutureProvider<List<NewsEntity>>((ref) async {
+    FutureProvider<List<NewsEntityNamed>>((ref) async {
   final selectedChannel = ref.watch(selectedChannelProvider);
   final newsEntitiesProvider = ref.watch(newsEntitesProvider);
   final subscribedProviders = ref.watch(userSubscribedFeedProvider);
@@ -129,4 +122,8 @@ final selectedChannelFeedProvider =
   final subscribedProvider =
       await newsProvidersRepository.fetchByProviderId(selectedChannel.id);
   return newsEntitiesProvider.getAllNewsByProvider(subscribedProvider);
+});
+
+final selectedTimeFrameProvider = StateProvider<String>((ref) {
+  return TimeFrameOptions.today;
 });

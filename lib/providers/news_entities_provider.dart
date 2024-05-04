@@ -1,45 +1,54 @@
-import 'package:final_project/models/feeds/news_entity/news_entity.dart';
+import 'package:final_project/models/feeds/news_entity_named/news_entity_named.dart';
 import 'package:final_project/models/feeds/news_provider/news_provider.dart';
-import 'package:final_project/services/repositories/news_entities_repository.dart';
 import 'package:final_project/utilities/rss_parser.dart';
 
 class NewsEntitiesProvider {
-  final NewsEntitiesRepository _newsEntitiesRepository;
+  NewsEntitiesProvider();
 
-  NewsEntitiesProvider({required NewsEntitiesRepository newsEntitiesRepository})
-      : _newsEntitiesRepository = newsEntitiesRepository;
-
-  Future<List<NewsEntity>> getAllNewsByProvider(NewsProvider provider) async {
+  Future<List<NewsEntityNamed>> getAllNewsByProvider(
+      NewsProvider provider) async {
     final rssNews =
         await parseRSSFeedFromUrl(provider.providerRssUrl, provider.providerId);
 
-    for (final news in rssNews) {
-      final newsFoundInDb = await _newsEntitiesRepository.findByLink(news.link);
-      if (newsFoundInDb.isEmpty) {
-        await _newsEntitiesRepository.add(news);
-      }
-    }
-
-    return await _newsEntitiesRepository.fetchByProviderId(provider.providerId);
+    List<NewsEntityNamed> newsFeedNamed = rssNews
+        .map((e) => NewsEntityNamed(
+              id: e.id,
+              providerName: provider.providerName,
+              providerId: e.providerId,
+              title: e.title,
+              description: e.description,
+              link: e.link,
+              author: e.author,
+              publishedOn: e.publishedOn,
+            ))
+        .toList();
+    return newsFeedNamed;
   }
 
-  Future<List<NewsEntity>> getAllNewsByProviders(
+  Future<List<NewsEntityNamed>> getAllNewsByProviders(
       List<NewsProvider> providers) async {
-    final List<String> providerIds =
-        providers.map((e) => e.providerId).toList();
+    Map<String, String> providerIdToNewsProviderName = {};
+    List<NewsEntityNamed> newsFeedNamed = [];
+
     for (final provider in providers) {
+      providerIdToNewsProviderName[provider.providerId] = provider.providerName;
       final rssNews = await parseRSSFeedFromUrl(
           provider.providerRssUrl, provider.providerId);
 
-      for (final news in rssNews) {
-        final newsFoundInDb =
-            await _newsEntitiesRepository.findByLink(news.link);
-
-        if (newsFoundInDb.isEmpty) {
-          await _newsEntitiesRepository.add(news);
-        }
-      }
+      newsFeedNamed.addAll(rssNews
+          .map((e) => NewsEntityNamed(
+                id: e.id,
+                providerName: provider.providerName,
+                providerId: e.providerId,
+                title: e.title,
+                description: e.description,
+                link: e.link,
+                author: e.author,
+                publishedOn: e.publishedOn,
+              ))
+          .toList());
     }
-    return await _newsEntitiesRepository.fetchByProviderIds(providerIds);
+
+    return newsFeedNamed;
   }
 }
