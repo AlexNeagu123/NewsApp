@@ -3,6 +3,7 @@ import 'package:final_project/screens/channels_screen.dart';
 import 'package:final_project/screens/feed_screen.dart';
 import 'package:final_project/screens/login_screen.dart';
 import 'package:final_project/screens/register_screen.dart';
+import 'package:final_project/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppRouter {
@@ -28,6 +29,10 @@ class AppRouter {
         return MaterialPageRoute<dynamic>(
             builder: (_) => const ChannelsScreen(),
             settings: const RouteSettings(name: Routes.channelScreenRoute));
+      case Routes.welcomeScreenRoute:
+        return MaterialPageRoute<dynamic>(
+            builder: (_) => const WelcomeScreen(),
+            settings: const RouteSettings(name: Routes.welcomeScreenRoute));
       default:
         return _errorRoute();
     }

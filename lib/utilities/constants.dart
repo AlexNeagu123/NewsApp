@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:final_project/models/feeds/selected_channel/selected_channel.dart';
+import 'package:flutter/foundation.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:uuid/uuid.dart';
 import 'package:html/parser.dart' as htmlparser;
 import 'package:intl/intl.dart';
@@ -20,6 +24,7 @@ class StringConstants {
 
 enum PageType {
   feedPage,
+  welcomePage,
   channelsPage;
 }
 
@@ -58,9 +63,17 @@ String truncateWithEllipsis(String text, int maxLength) {
 }
 
 String truncateHtmlString(String htmlString, int length) {
-  final document = htmlparser.parse(htmlString);
+  final document =
+      htmlparser.parse(utf8.decode(htmlString.codeUnits, allowMalformed: true));
+
   final plainText = document.body!.text;
-  return plainText.length > length
-      ? '${plainText.substring(0, length)}...'
-      : plainText;
+  final unescape = HtmlUnescape();
+  final unescapedText = unescape.convert(plainText);
+
+  debugPrint(plainText);
+  debugPrint(unescapedText);
+
+  return unescapedText.length > length
+      ? '${unescapedText.substring(0, length)}...'
+      : unescapedText;
 }

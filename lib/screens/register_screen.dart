@@ -21,7 +21,7 @@ class RegisterScreen extends HookConsumerWidget {
     _emailController.clear();
     _passwordController.clear();
     _confirmPasswordController.clear();
-    AppRouter.pushNamed(Routes.feedScreenRoute);
+    AppRouter.pushNamed(Routes.welcomeScreenRoute);
   }
 
   @override

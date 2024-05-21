@@ -1,7 +1,6 @@
-import 'package:final_project/models/feeds/news_entity/news_entity.dart';
 import 'package:final_project/models/feeds/news_entity_named/news_entity_named.dart';
-import 'package:final_project/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:intl/intl.dart';
@@ -43,15 +42,21 @@ class FeedCard extends HookConsumerWidget {
               style: const TextStyle(fontSize: 12.0, color: Colors.grey),
             ),
             const SizedBox(height: 8.0),
-            Text(
-              'By ${feedItem.author}',
-              style:
-                  const TextStyle(fontSize: 14.0, fontStyle: FontStyle.italic),
-            ),
+            feedItem.author != 'Unknown' && feedItem.author != ''
+                ? Text(
+                    'By ${feedItem.author}',
+                    style: const TextStyle(
+                        fontSize: 14.0, fontStyle: FontStyle.italic),
+                  )
+                : Container(),
             const SizedBox(height: 8.0),
-            Text(
-              truncateHtmlString(feedItem.description, 400),
-              style: const TextStyle(fontSize: 11.0),
+            Html(
+              data: feedItem.description,
+              style: {
+                "html": Style(
+                  fontSize: FontSize(16.0),
+                ),
+              },
             ),
             const SizedBox(height: 8.0),
             Align(

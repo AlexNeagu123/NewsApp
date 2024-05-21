@@ -24,7 +24,7 @@ class LoginScreen extends HookConsumerWidget {
   void clearAndRedirect() {
     _emailController.clear();
     _passwordController.clear();
-    AppRouter.pushNamed(Routes.channelScreenRoute);
+    AppRouter.pushNamed(Routes.welcomeScreenRoute);
   }
 
   @override

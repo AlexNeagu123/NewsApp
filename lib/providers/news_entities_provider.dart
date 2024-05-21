@@ -49,6 +49,7 @@ class NewsEntitiesProvider {
           .toList());
     }
 
+    newsFeedNamed.sort((a, b) => b.publishedOn.compareTo(a.publishedOn));
     return newsFeedNamed;
   }
 }
